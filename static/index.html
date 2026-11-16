@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7f8">
+  <title>DeepDTA — Binding Affinity Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --ink: #172b32;
+      --muted: #697b80;
+      --line: #e2e9e9;
+      --paper: #ffffff;
+      --bg: #f5f7f7;
+      --teal: #087f78;
+      --teal-dark: #075f5a;
+      --mint: #e9f5f2;
+      --shadow: 0 10px 30px #163a350e;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 14.5px/1.5 'DM Sans', sans-serif;
+    }
+
+    button,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* Top Header */
+    .topbar {
+      height: 66px;
+      border-bottom: 1px solid var(--line);
+      background: #ffffffee;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(16px, 3vw, 40px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font: 800 18px/1.1 'Manrope', sans-serif;
+      letter-spacing: -0.5px;
+    }
+
+    .brandmark {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--teal);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      flex: none;
+    }
+
+    .brandmark svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    .brand small {
+      display: block;
+      font: 500 9.5px/1.2 'DM Mono', monospace;
+      letter-spacing: 1.2px;
+      color: #7d8e92;
+      margin-top: 2px;
+      text-transform: uppercase;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12.5px;
+      font-weight: 500;
+      background: #f1f6f5;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid #e1ecea;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: #2fa374;
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px #2fa37422;
+    }
+
+    /* Compact, balanced main container */
+    main {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 26px clamp(16px, 2.5vw, 32px) 48px;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--teal);
+      font: 500 10.5px 'DM Mono', monospace;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .eyebrow:before {
+      content: '';
+      width: 18px;
+      height: 1px;
+      background: var(--teal);
+    }
+
+    h1 {
+      font: 700 clamp(24px, 3vw, 34px)/1.15 'Manrope', sans-serif;
+      letter-spacing: -1px;
+      margin: 8px 0 6px;
+    }
+
+    .intro {
+      color: var(--muted);
+      max-width: 780px;
+      line-height: 1.55;
+      margin: 0;
+      font-size: 14px;
+    }
+
+    /* Primary 2-Column Workspace */
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.92fr);
+      gap: 18px;
+      margin-top: 20px;
+      align-items: stretch;
+    }
+
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .form-card {
+      padding: 22px;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font: 700 15.5px 'Manrope', sans-serif;
+      letter-spacing: -0.3px;
+    }
+
+    .card-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .step {
+      font: 500 10px 'DM Mono', monospace;
+      color: #829396;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 4px 8px;
+    }
+
+    .row2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field {
+      margin-top: 14px;
+    }
+
+    .row2 .field {
+      margin-top: 0;
+    }
+
+    .fieldtop {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+
+    .field label {
+      font-weight: 700;
+      font-size: 12.5px;
+    }
+
+    .optional {
+      font-size: 11px;
+      color: #8f9d9f;
+    }
+
+    .selectwrap {
+      position: relative;
+    }
+
+    .selectwrap:after {
+      content: '⌄';
+      position: absolute;
+      right: 12px;
+      top: 8px;
+      color: #64787c;
+      pointer-events: none;
+      font-size: 16px;
+    }
+
+    select {
+      width: 100%;
+      appearance: none;
+      height: 40px;
+      border: 1px solid #dce5e5;
+      border-radius: 9px;
+      padding: 0 34px 0 12px;
+      background: #fff;
+      color: var(--ink);
+      font-size: 13px;
+      outline: none;
+    }
+
+    select:focus,
+    textarea:focus {
+      border-color: #63aaa4;
+      box-shadow: 0 0 0 3px #087f7812;
+    }
+
+    .sequence {
+      width: 100%;
+      height: 82px;
+      resize: vertical;
+      border: 1px solid #dce5e5;
+      border-radius: 9px;
+      padding: 10px 12px;
+      color: #3f555b;
+      font: 12px/1.6 'DM Mono', monospace;
+      outline: none;
+    }
+
+    .sequence::placeholder {
+      color: #a1adaf;
+    }
+
+    .hint {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: #8c999b;
+      font-size: 10.5px;
+      margin-top: 5px;
+    }
+
+    .predict {
+      width: 100%;
+      margin-top: 18px;
+      height: 45px;
+      border: 0;
+      border-radius: 9px;
+      background: var(--teal);
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      transition: 0.18s;
+    }
+
+    .predict:hover {
+      background: var(--teal-dark);
+      transform: translateY(-1px);
+    }
+
+    .predict:disabled {
+      opacity: 0.65;
+      cursor: wait;
+      transform: none;
+    }
+
+    .predict svg {
+      width: 16px;
+    }
+
+    .helper {
+      font-size: 10.5px;
+      color: #92a0a2;
+      text-align: center;
+      margin: 9px 0 0;
+    }
+
+    /* Right Card: Prediction Result */
+
+    .result {
+      padding: 24px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 18px;
+      /* Gives a natural, comfortable breathing room */
+    }
+
+    .result:before {
+      content: '';
+      position: absolute;
+      width: 210px;
+      height: 210px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #e7f4f1 0, transparent 70%);
+      right: -80px;
+      top: -90px;
+      pointer-events: none;
+    }
+
+    .resulthead {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .resultlabel {
+      font: 500 10.5px 'DM Mono', monospace;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #718187;
+    }
+
+    .resultstamp {
+      font: 500 10px 'DM Mono', monospace;
+      color: #5b7873;
+      background: #eff6f4;
+      border: 1px solid #dcebe7;
+      border-radius: 20px;
+      padding: 5px 10px;
+    }
+
+    .scorebox {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      margin: 18px 0 4px;
+    }
+
+    .score {
+      font: 700 58px/.95 'Manrope', sans-serif;
+      letter-spacing: -3px;
+      color: var(--ink);
+    }
+
+    .unit {
+      font: 500 12.5px 'DM Mono', monospace;
+      color: #697b80;
+      margin-bottom: 7px;
+    }
+
+    .verdict {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--teal-dark);
+      background: var(--mint);
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 8px;
+      padding: 7px 11px;
+      width: max-content;
+      max-width: 100%;
+      margin-top: 8px;
+    }
+
+    .verdict i {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #149185;
+      flex: none;
+    }
+
+    .verdict.weak {
+      background: #fdf3f1;
+      color: #8c3b2b;
+    }
+
+    .verdict.weak i {
+      background: #d4654f;
+    }
+
+    .verdict.mod {
+      background: #fcf8eb;
+      color: #7d6219;
+    }
+
+    .verdict.mod i {
+      background: #cfa029;
+    }
+
+    .scale {
+      margin-top: 20px;
+    }
+
+    .scalelabel {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #6f8084;
+      font-size: 11.5px;
+      margin-bottom: 8px;
+    }
+
+    .scalelabel strong {
+      color: #31464b;
+      font-weight: 700;
+    }
+
+    .track {
+      height: 9px;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #f0c9bd 0 33.3%, #f0dfab 33.3% 66.6%, #b8dec7 66.6%);
+      position: relative;
+    }
+
+    .marker {
+      position: absolute;
+      left: 76%;
+      top: 50%;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: #fff;
+      border: 4px solid var(--teal);
+      box-shadow: 0 2px 8px #164b4530;
+      transform: translate(-50%, -50%);
+      transition: left 0.35s ease;
+    }
+
+    .ticks {
+      display: flex;
+      justify-content: space-between;
+      font: 10px 'DM Mono', monospace;
+      color: #8f9c9e;
+      margin-top: 6px;
+    }
+
+    .thresholds {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .threshold {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .threshold b {
+      display: block;
+      font: 700 11px 'Manrope', sans-serif;
+      color: #31454a;
+    }
+
+    .threshold span {
+      font: 10px 'DM Mono', monospace;
+      color: #7c8d90;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .threshold.good {
+      background: #f5faf6;
+      border-color: #deeee2;
+    }
+
+    .threshold.avg {
+      background: #fdfaf2;
+      border-color: #f2ebd6;
+    }
+
+    .threshold.poor {
+      background: #fcf6f4;
+      border-color: #f1e4df;
+    }
+
+    .divider {
+      border: 0;
+      border-top: 1px solid var(--line);
+      margin: 16px 0 14px;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 14px;
+    }
+
+    .meta label {
+      font: 9.5px 'DM Mono', monospace;
+      color: #8d9a9c;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .meta strong {
+      display: block;
+      margin-top: 2px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #3d5358;
+    }
+
+    /* Lower section */
+    .lower {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .info {
+      padding: 18px 22px;
+    }
+
+    .info h2 {
+      font: 700 13.5px 'Manrope', sans-serif;
+      margin: 0 0 9px;
+      color: var(--ink);
+    }
+
+    .info p {
+      font-size: 12px;
+      line-height: 1.6;
+      color: #5f7176;
+      margin: 0;
+    }
+
+    .notice {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      background: #f8f8f2;
+      border: 1px solid #eae9d8;
+      border-radius: 9px;
+      padding: 11px 12px;
+    }
+
+    .notice svg {
+      width: 16px;
+      height: 16px;
+      flex: none;
+      color: #a9914c;
+      margin-top: 1px;
+    }
+
+    .notice p {
+      font-size: 11.5px;
+      line-height: 1.55;
+      color: #67726f;
+    }
+
+    .notice strong {
+      color: #475853;
+    }
+
+    .warnings-box {
+      margin-top: 10px;
+      display: none;
+      background: #fdf4f2;
+      border: 1px solid #f0d3cd;
+      border-radius: 9px;
+      padding: 10px 12px;
+    }
+
+    .warnings-box.show {
+      display: block;
+    }
+
+    .warnings-title {
+      font: 700 11px 'Manrope', sans-serif;
+      color: #963827;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .warnings-list {
+      margin: 0;
+      padding-left: 16px;
+      font-size: 11.5px;
+      line-height: 1.5;
+      color: #7f392c;
+    }
+
+    /* Accuracy Graph Card */
+    .chartcard {
+      margin-top: 18px;
+      padding: 20px 22px 18px;
+    }
+
+    .chart-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .charttitle {
+      font: 700 14.5px 'Manrope', sans-serif;
+    }
+
+    .chartsub {
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .metrics-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .pill {
+      font: 500 11px 'DM Mono', monospace;
+      background: #f3f7f6;
+      border: 1px solid #e1ecea;
+      color: #365055;
+      padding: 4px 9px;
+      border-radius: 7px;
+    }
+
+    .chartlegend {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: #6b7d81;
+      font-size: 11px;
+    }
+
+    .leg-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .leg-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #51a9a0;
+      opacity: 0.65;
+    }
+
+    .leg-line {
+      width: 14px;
+      height: 2px;
+      border-top: 2px dashed #8fa3a6;
+    }
+
+    .leg-cur {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #087f78;
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 1.5px #087f78;
+    }
+
+    .chart-wrap {
+      margin-top: 14px;
+      position: relative;
+      height: 220px;
+      width: 100%;
+    }
+
+    .chart-wrap svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      color: #8c999b;
+      font-size: 11px;
+      margin-top: 20px;
+      padding: 0 2px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translate(-50%, 20px);
+      background: #173a38;
+      color: #fff;
+      border-radius: 10px;
+      padding: 11px 16px;
+      font-size: 12.5px;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.25s;
+      box-shadow: 0 10px 30px #163a3530;
+      z-index: 50;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @media (max-width: 880px) {
+
+      .layout,
+      .lower,
+      .row2 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brandmark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M8 3v5l-4 7.3A3.1 3.1 0 0 0 6.7 20h10.6a3.1 3.1 0 0 0 2.7-4.7L16 8V3M7 3h10M7 14h10"></path>
+          <circle cx="10" cy="16" r=".7" fill="currentColor"></circle>
+          <circle cx="15" cy="12" r=".7" fill="currentColor"></circle>
+        </svg>
+      </span>
+      <span>deepdta<small>BINDING AFFINITY STUDIO</small></span>
+    </div>
+    <span class="status"><i class="dot"></i><span id="modelStatusText">Models ready (Davis &amp; KIBA)</span></span>
+  </header>
+
+  <main>
+    <div class="eyebrow">Prediction workspace</div>
+    <h1>Predict the drug-target binding affinity</h1>
+    <p class="intro">Estimate how strongly a small molecule may bind to a protein target. Choose a benchmark, select
+      independent drugs and proteins or paste custom sequences, and review predictions.</p>
+
+    <div class="layout">
+      <!-- Left Card: Input -->
+      <section class="card form-card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Set up your prediction</div>
+            <div class="card-sub">Choose a benchmark dataset, pick drugs and proteins independently, or paste custom
+              sequences.</div>
+          </div>
+          <span class="step">01 / INPUT</span>
+        </div>
+
+        <div class="field">
+          <div class="fieldtop"><label for="dataset">Benchmark dataset</label></div>
+          <div class="selectwrap">
+            <select id="dataset">
+              <option value="Davis">Davis (pKd)</option>
+              <option value="KIBA">KIBA (KIBA score)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row2" style="margin-top: 14px;">
+          <div class="field">
+            <div class="fieldtop">
+              <label for="drugSelect">Drug preset</label>
+              <span class="optional">Independent</span>
+            </div>
+            <div class="selectwrap">
+              <select id="drugSelect">
+                <option value="">— Custom SMILES —</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="fieldtop">
+              <label for="targetSelect">Protein preset</label>
+              <span class="optional">Independent</span>
+            </div>
+            <div class="selectwrap">
+              <select id="targetSelect">
+                <option value="">— Custom Sequence —</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top: 14px;">
+          <div class="fieldtop">
+            <label for="drug">Drug molecule</label>
+            <span class="optional" id="smilesHintBadge">SMILES notation</span>
+          </div>
+          <textarea class="sequence" id="drug" placeholder="Paste a SMILES string…"></textarea>
+          <div class="hint">
+            <span id="smilesFormatNote">Use canonical uppercase SMILES notation.</span>
+            <span id="drugCount">0 characters</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="fieldtop">
+            <label for="target">Protein target</label>
+            <span class="optional">Amino acid sequence</span>
+          </div>
+          <textarea class="sequence" id="target" placeholder="Paste a protein sequence…"></textarea>
+          <div class="hint">
+            <span>One-letter amino acid codes. FASTA header is optional.</span>
+            <span id="targetCount">0 residues</span>
+          </div>
+        </div>
+
+        <button class="predict" id="predict" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M13 6l6 6-6 6"></path>
+          </svg>
+          Predict binding affinity
+        </button>
+        <p class="helper">Predictions are computational estimates for research use.</p>
+      </section>
+
+      <!-- Right Card: Prediction Result -->
+      <section class="card result" aria-live="polite">
+        <div>
+          <div class="resulthead">
+            <div class="resultlabel">Prediction result</div>
+            <span class="resultstamp" id="resultDataset">DAVIS SCALE</span>
+          </div>
+
+          <div class="scorebox">
+            <div class="score" id="score">—</div>
+            <div class="unit" id="unit">pKd</div>
+          </div>
+
+          <div class="verdict" id="verdict">
+            <i></i><span id="verdictText">Select presets or run a prediction</span>
+          </div>
+
+          <div class="scale">
+            <div class="scalelabel">
+              <strong id="scaleHeading">Davis affinity interpretation</strong>
+              <span id="scaleRange">5.0 — 10.5 pKd</span>
+            </div>
+            <div class="track">
+              <div class="marker" id="marker" style="left: 50%;"></div>
+            </div>
+            <div class="ticks" id="ticks">
+              <span>5.0</span><span>6.0</span><span>7.0 (Cutoff)</span><span>10.5+</span>
+            </div>
+          </div>
+
+          <div class="thresholds" id="thresholds"></div>
+        </div>
+
+        <div>
+          <hr class="divider">
+          <div class="meta">
+            <div><label>Benchmark</label><strong id="benchMeta">Davis</strong></div>
+            <div><label>Run status</label><strong id="runStatus">Ready</strong></div>
+            <div><label>Drug input</label><strong id="drugMeta">SMILES · 0 chars</strong></div>
+            <div><label>Target input</label><strong id="targetMeta">Sequence · 0 residues</strong></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Row 2: How to read this result & About this estimate -->
+    <div class="lower">
+      <section class="card info">
+        <h2>How to read this result</h2>
+        <p id="howToReadText">
+          Scores are interpreted on the selected benchmark’s scale. On <strong>Davis</strong>, higher
+          <strong>pKd</strong> values indicate stronger predicted binding (values ≥ 7.0 pKd represent active/strong
+          kinase binding). On <strong>KIBA</strong>, higher scores reflect stronger integrated bioactivity (values ≥
+          12.1 indicate strong binding). Compare candidates strictly within the same dataset.
+        </p>
+      </section>
+
+      <section class="card info">
+        <h2>About this estimate</h2>
+        <div class="notice">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M12 11v5m0-8h.01"></path>
+          </svg>
+          <p>
+            <strong>Research estimate, not a measured result.</strong> Predictions depend on SMILES formatting, sequence
+            length limits, and training distribution. Experimental validation is required before drawing biological
+            conclusions.
+          </p>
+        </div>
+        <div class="warnings-box" id="warningsBox">
+          <div class="warnings-title">⚠ Input &amp; Sequence Warnings</div>
+          <ul class="warnings-list" id="warningsList"></ul>
+        </div>
+      </section>
+    </div>
+
+    <!-- Row 3: Accuracy Graph -->
+    <section class="card chartcard">
+      <div class="chart-head">
+        <div>
+          <div class="charttitle" id="chartTitle">Model accuracy graph — Davis benchmark</div>
+          <div class="chartsub" id="chartSub">Predicted vs. experimentally measured affinity on held-out test pairs
+          </div>
+        </div>
+        <div class="metrics-pills" id="metricsPills"></div>
+        <div class="chartlegend">
+          <span class="leg-item"><i class="leg-dot"></i> Test set pairs</span>
+          <span class="leg-item"><i class="leg-line"></i> Ideal (y = x)</span>
+          <span class="leg-item"><i class="leg-cur"></i> Current prediction</span>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <svg id="accuracySvg" viewBox="0 0 920 220" preserveAspectRatio="xMidYMid meet"
+          aria-label="Predicted vs Actual Accuracy Graph"></svg>
+      </div>
+    </section>
+
+    <div class="footer">
+      <span>DeepDTA · Drug–Target Binding Affinity Prediction</span>
+      <span>Scores are dataset-specific · Compare like with like</span>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    let META = null;
+    let currentMeasured = null;
+    let currentPredicted = null;
+
+    function toast(msg) {
+      const el = $('#toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.classList.remove('show'), 3200);
+    }
+
+    function updateCounts() {
+      const ds = $('#dataset').value;
+      const maxS = META && META[ds] ? META[ds].max_smiles : (ds === 'KIBA' ? 100 : 85);
+      const maxP = META && META[ds] ? META[ds].max_protein : (ds === 'KIBA' ? 1000 : 1200);
+      const d = $('#drug').value.replace(/\s+/g, '').length;
+      const t = $('#target').value.replace(/>[^\r\n]*[\r\n]?/g, '').replace(/\s+/g, '').length;
+      $('#drugCount').textContent = `${d} / ${maxS} max chars`;
+      $('#targetCount').textContent = `${t} / ${maxP} max residues`;
+      $('#drugMeta').textContent = `SMILES · ${d} chars`;
+      $('#targetMeta').textContent = `Sequence · ${t} residues`;
+    }
+
+    function renderWarnings(warnings) {
+      const box = $('#warningsBox');
+      const list = $('#warningsList');
+      list.innerHTML = '';
+      if (warnings && warnings.length > 0) {
+        warnings.forEach(w => {
+          const li = document.createElement('li');
+          li.textContent = w;
+          list.appendChild(li);
+        });
+        box.classList.add('show');
+      } else {
+        box.classList.remove('show');
+      }
+    }
+
+    function updateResultUI(ds, value, label, statusText, measuredVal = null) {
+      const cfg = META[ds];
+      currentPredicted = value;
+      if (measuredVal !== null) currentMeasured = measuredVal;
+
+      $('#score').textContent = typeof value === 'number' ? value.toFixed(3) : '—';
+      $('#unit').textContent = cfg.unit;
+      $('#benchMeta').textContent = ds;
+      $('#runStatus').textContent = statusText;
+
+      const verdictEl = $('#verdict');
+      verdictEl.className = 'verdict';
+      if (typeof value === 'number') {
+        if (value < cfg.weak_below) verdictEl.classList.add('weak');
+        else if (value < cfg.binds_cutoff) verdictEl.classList.add('mod');
+      }
+      $('#verdictText').textContent = label;
+
+      if (typeof value === 'number') {
+        const pct = Math.max(2, Math.min(98, ((value - cfg.scale_min) / (cfg.scale_max - cfg.scale_min)) * 100));
+        $('#marker').style.left = `${pct}%`;
+      } else {
+        $('#marker').style.left = '50%';
+      }
+
+      renderAccuracyChart(ds);
+    }
+
+    function applyDatasetUI(ds, autoLoadFirst = true) {
+      if (!META || !META[ds]) return;
+      const cfg = META[ds];
+      const isKiba = ds === 'KIBA';
+
+      $('#resultDataset').textContent = `${ds.toUpperCase()} SCALE`;
+      $('#scaleHeading').textContent = `${ds} affinity interpretation`;
+      $('#unit').textContent = cfg.unit;
+      $('#scaleRange').textContent = `${cfg.scale_min.toFixed(1)} — ${cfg.scale_max.toFixed(1)} ${cfg.unit}`;
+
+      $('#smilesFormatNote').textContent = isKiba
+        ? 'Supports canonical SMILES including brackets [ ] and +/- charges.'
+        : 'Use canonical uppercase SMILES without brackets (e.g., C1=CC=CC=C1).';
+
+      if (isKiba) {
+        $('#ticks').innerHTML = `<span>9.0</span><span>11.2</span><span>12.1 (Cutoff)</span><span>15.5+</span>`;
+        $('#thresholds').innerHTML = `
+          <div class="threshold poor"><b>Weak</b><span>&lt; 11.2 KIBA</span></div>
+          <div class="threshold avg"><b>Moderate</b><span>11.2–12.1 KIBA</span></div>
+          <div class="threshold good"><b>Strong</b><span>&ge; 12.1 KIBA</span></div>
+        `;
+      } else {
+        $('#ticks').innerHTML = `<span>5.0</span><span>6.0</span><span>7.0 (Cutoff)</span><span>10.5+</span>`;
+        $('#thresholds').innerHTML = `
+          <div class="threshold poor"><b>Weak</b><span>&lt; 6.0 pKd</span></div>
+          <div class="threshold avg"><b>Moderate</b><span>6.0–7.0 pKd</span></div>
+          <div class="threshold good"><b>Strong</b><span>&ge; 7.0 pKd</span></div>
+        `;
+      }
+
+      // Populate separate Drug and Protein dropdowns independently
+      const drugSel = $('#drugSelect');
+      const targetSel = $('#targetSelect');
+      drugSel.innerHTML = '<option value="">— Custom SMILES —</option>';
+      targetSel.innerHTML = '<option value="">— Custom Sequence —</option>';
+
+      cfg.examples.forEach((ex, idx) => {
+        const optD = document.createElement('option');
+        optD.value = String(idx);
+        optD.textContent = ex.drug_id;
+        drugSel.appendChild(optD);
+
+        const optT = document.createElement('option');
+        optT.value = String(idx);
+        optT.textContent = ex.protein_id;
+        targetSel.appendChild(optT);
+      });
+
+      drugSel.onchange = () => {
+        const idx = drugSel.value;
+        if (idx !== '') {
+          $('#drug').value = cfg.examples[Number(idx)].smiles;
+          currentMeasured = null;
+          updateCounts();
+        }
+      };
+
+      targetSel.onchange = () => {
+        const idx = targetSel.value;
+        if (idx !== '') {
+          $('#target').value = cfg.examples[Number(idx)].sequence;
+          currentMeasured = null;
+          updateCounts();
+        }
+      };
+
+      // Update Metrics Pills
+      const m = cfg.metrics;
+      $('#chartTitle').textContent = `Model accuracy graph — ${ds} test benchmark`;
+      $('#chartSub').textContent = `Predicted vs. measured affinity across ${m.n_test.toLocaleString()} held-out test pairs (100 epochs)`;
+      $('#metricsPills').innerHTML = `
+        <span class="pill">CI: ${m.CI.toFixed(3)}</span>
+        <span class="pill">MSE: ${m.MSE.toFixed(3)}</span>
+        <span class="pill">r²m: ${m.r2m.toFixed(3)}</span>
+        <span class="pill">AUPR: ${m.AUPR.toFixed(3)}</span>
+      `;
+
+      if (autoLoadFirst && cfg.examples.length > 0) {
+        drugSel.value = '0';
+        targetSel.value = '0';
+        $('#drug').value = cfg.examples[0].smiles;
+        $('#target').value = cfg.examples[0].sequence;
+        currentMeasured = cfg.examples[0].measured;
+        updateCounts();
+        runPrediction(true);
+      } else {
+        updateCounts();
+        renderAccuracyChart(ds);
+      }
+    }
+
+    async function runPrediction(isExample = false) {
+      const ds = $('#dataset').value;
+      const smiles = $('#drug').value.trim();
+      const protein = $('#target').value.trim();
+      if (!smiles || !protein) {
+        toast('Please enter both a drug SMILES string and a protein sequence.');
+        return;
+      }
+
+      const btn = $('#predict');
+      btn.disabled = true;
+      $('#runStatus').textContent = 'Running inference…';
+
+      try {
+        const res = await fetch('/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dataset: ds, smiles, protein })
+        });
+        const data = await res.json();
+        if (data.error) {
+          toast(data.error);
+          $('#runStatus').textContent = 'Input error';
+          return;
+        }
+        renderWarnings(data.warnings || []);
+        const statusLabel = isExample && currentMeasured !== null
+          ? `Example (Measured: ${currentMeasured} ${data.unit})`
+          : 'Live ONNX prediction';
+        updateResultUI(ds, data.value, data.label, statusLabel, isExample ? currentMeasured : null);
+      } catch (err) {
+        toast('Inference request failed. Check that the FastAPI server is running.');
+        $('#runStatus').textContent = 'Server error';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function renderAccuracyChart(ds) {
+      const svg = $('#accuracySvg');
+      if (!META || !META[ds]) return;
+      const cfg = META[ds];
+      const pts = cfg.test_points || [];
+      const minV = cfg.scale_min;
+      const maxV = cfg.scale_max;
+
+      const W = 920, H = 220;
+      const padL = 56, padR = 24, padT = 16, padB = 34;
+      const plotW = W - padL - padR;
+      const plotH = H - padT - padB;
+
+      const toX = v => padL + ((Math.max(minV, Math.min(maxV, v)) - minV) / (maxV - minV)) * plotW;
+      const toY = v => padT + plotH - ((Math.max(minV, Math.min(maxV, v)) - minV) / (maxV - minV)) * plotH;
+
+      let out = '';
+
+      // Grid lines & axis ticks
+      const steps = 5;
+      for (let i = 0; i <= steps; i++) {
+        const val = minV + ((maxV - minV) * i) / steps;
+        const x = toX(val).toFixed(1);
+        const y = toY(val).toFixed(1);
+        out += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#edf2f1" stroke-width="1"/>`;
+        out += `<line x1="${x}" y1="${padT}" x2="${x}" y2="${padT + plotH}" stroke="#f3f6f6" stroke-width="1"/>`;
+        out += `<text x="${padL - 8}" y="${Number(y) + 3}" text-anchor="end" fill="#8d9a9c" font-family="DM Mono, monospace" font-size="9.5">${val.toFixed(1)}</text>`;
+        out += `<text x="${x}" y="${padT + plotH + 15}" text-anchor="middle" fill="#8d9a9c" font-family="DM Mono, monospace" font-size="9.5">${val.toFixed(1)}</text>`;
+      }
+
+      // Axis borders & titles
+      out += `<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + plotH}" stroke="#d5dfdf" stroke-width="1.2"/>`;
+      out += `<line x1="${padL}" y1="${padT + plotH}" x2="${W - padR}" y2="${padT + plotH}" stroke="#d5dfdf" stroke-width="1.2"/>`;
+      out += `<text x="${padL + plotW / 2}" y="${H - 4}" text-anchor="middle" fill="#6f8084" font-family="DM Mono, monospace" font-size="10">MEASURED AFFINITY (${cfg.unit})</text>`;
+      out += `<text x="14" y="${padT + plotH / 2}" text-anchor="middle" fill="#6f8084" font-family="DM Mono, monospace" font-size="10" transform="rotate(-90 14 ${padT + plotH / 2})">PREDICTED (${cfg.unit})</text>`;
+
+      // Active cutoff lines
+      const cx = toX(cfg.binds_cutoff).toFixed(1);
+      const cy = toY(cfg.binds_cutoff).toFixed(1);
+      out += `<line x1="${cx}" y1="${padT}" x2="${cx}" y2="${padT + plotH}" stroke="#d7e7e4" stroke-dasharray="3 3" stroke-width="1"/>`;
+      out += `<line x1="${padL}" y1="${cy}" x2="${W - padR}" y2="${cy}" stroke="#d7e7e4" stroke-dasharray="3 3" stroke-width="1"/>`;
+
+      // Ideal y = x diagonal
+      out += `<line x1="${toX(minV)}" y1="${toY(minV)}" x2="${toX(maxV)}" y2="${toY(maxV)}" stroke="#8ea3a6" stroke-dasharray="5 5" stroke-width="1.5"/>`;
+
+      // Test points
+      const stride = Math.max(1, Math.floor(pts.length / 600));
+      for (let i = 0; i < pts.length; i += stride) {
+        const [pred, actual] = pts[i];
+        const px = toX(actual).toFixed(1);
+        const py = toY(pred).toFixed(1);
+        out += `<circle cx="${px}" cy="${py}" r="2.7" fill="#46a39a" fill-opacity="0.45"/>`;
+      }
+
+      // Highlight current user prediction
+      if (typeof currentPredicted === 'number') {
+        const py = toY(currentPredicted).toFixed(1);
+        if (typeof currentMeasured === 'number' && currentMeasured !== null) {
+          const px = toX(currentMeasured).toFixed(1);
+          out += `<circle cx="${px}" cy="${py}" r="6.5" fill="#087f78" stroke="#ffffff" stroke-width="2.2"/>`;
+          out += `<text x="${Number(px) + 10}" y="${Number(py) - 6}" fill="#075f5a" font-family="DM Mono, monospace" font-size="10.5" font-weight="500">Pred ${currentPredicted.toFixed(2)} / Actual ${currentMeasured.toFixed(2)}</text>`;
+        } else {
+          const diagX = toX(currentPredicted).toFixed(1);
+          out += `<line x1="${padL}" y1="${py}" x2="${W - padR}" y2="${py}" stroke="#087f78" stroke-width="1.6" stroke-dasharray="4 3"/>`;
+          out += `<circle cx="${diagX}" cy="${py}" r="6" fill="#087f78" stroke="#ffffff" stroke-width="2"/>`;
+          out += `<text x="${Math.min(W - 145, Number(diagX) + 10)}" y="${Math.max(padT + 14, Number(py) - 8)}" fill="#075f5a" font-family="DM Mono, monospace" font-size="10.5" font-weight="500">Prediction: ${currentPredicted.toFixed(2)} ${cfg.unit}</text>`;
+        }
+      }
+
+      svg.innerHTML = out;
+    }
+
+    // Event bindings
+    $('#drug').addEventListener('input', () => {
+      $('#drugSelect').value = '';
+      currentMeasured = null;
+      updateCounts();
+    });
+    $('#target').addEventListener('input', () => {
+      $('#targetSelect').value = '';
+      currentMeasured = null;
+      updateCounts();
+    });
+    $('#dataset').addEventListener('change', () => {
+      renderWarnings([]);
+      applyDatasetUI($('#dataset').value, true);
+    });
+    $('#predict').addEventListener('click', () => runPrediction(false));
+
+    // Initialize
+    (async function init() {
+      try {
+        const res = await fetch('/metadata');
+        META = await res.json();
+        applyDatasetUI('Davis', true);
+      } catch (e) {
+        toast('Could not load model metadata from backend.');
+      }
+    })();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,17 @@
+{
+  "dataset": "Davis",
+  "epochs": 100,
+  "n_test": 5010,
+  "CI": 0.878,
+  "MSE": 0.261,
+  "r2m": 0.63,
+  "AUPR": 0.714,
+  "score_percentiles": {
+    "5": 5.0,
+    "25": 5.0,
+    "50": 5.0,
+    "75": 5.64,
+    "95": 7.66
+  },
+  "share_at_or_above_cutoff": 0.084
+}
