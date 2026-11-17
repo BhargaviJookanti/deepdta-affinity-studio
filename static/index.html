@@ -1,1278 +1,1336 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f5f7f8">
-  <title>DeepDTA — Binding Affinity Studio</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap"
-    rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DeepDTA | Binding Affinity Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --ink: #172b32;
-      --muted: #697b80;
-      --line: #e2e9e9;
-      --paper: #ffffff;
-      --bg: #f5f7f7;
-      --teal: #087f78;
-      --teal-dark: #075f5a;
-      --mint: #e9f5f2;
-      --shadow: 0 10px 30px #163a350e;
+      --navy-950: #0a2240;
+      --navy-900: #0d2b52;
+      --navy-800: #133b6e;
+      --blue-600: #1d63b8;
+      --blue-500: #2b7de9;
+      --teal-500: #14b8a6;
+      --teal-400: #2dd4bf;
+      --sky-100: #e6f2fc;
+      --sky-50: #f2f8fe;
+      --bg-page: #e9f2fa;
+      --card-bg: #ffffff;
+      --border: #d5e3f2;
+      --text-main: #0f294a;
+      --text-muted: #526a87;
+      --text-light: #7c93ae;
+      --shadow-card: 0 8px 24px rgba(13, 43, 82, 0.08);
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --radius-sm: 8px;
     }
 
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--ink);
-      font: 14.5px/1.5 'DM Sans', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(180deg, #dfeefb 0%, #edf5fc 38%, #e8f1fa 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.45;
     }
 
-    button,
-    select,
-    textarea {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    /* Top Header */
-    .topbar {
-      height: 66px;
-      border-bottom: 1px solid var(--line);
-      background: #ffffffee;
+    /* Top Navigation Bar */
+    .navbar {
+      background: linear-gradient(90deg, var(--navy-950) 0%, var(--navy-900) 100%);
+      color: #ffffff;
+      padding: 14px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 clamp(16px, 3vw, 40px);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      backdrop-filter: blur(12px);
+      box-shadow: 0 2px 12px rgba(10, 34, 64, 0.25);
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 11px;
-      font: 800 18px/1.1 'Manrope', sans-serif;
-      letter-spacing: -0.5px;
+      gap: 14px;
     }
 
-    .brandmark {
+    .brand-logo {
       width: 34px;
       height: 34px;
-      border-radius: 10px;
-      background: var(--teal);
-      display: grid;
-      place-items: center;
-      color: #fff;
-      flex: none;
-    }
-
-    .brandmark svg {
-      width: 19px;
-      height: 19px;
-    }
-
-    .brand small {
-      display: block;
-      font: 500 9.5px/1.2 'DM Mono', monospace;
-      letter-spacing: 1.2px;
-      color: #7d8e92;
-      margin-top: 2px;
-      text-transform: uppercase;
-    }
-
-    .status {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 12.5px;
-      font-weight: 500;
-      background: #f1f6f5;
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: 1px solid #e1ecea;
-    }
-
-    .dot {
-      width: 8px;
-      height: 8px;
-      background: #2fa374;
-      border-radius: 50%;
-      box-shadow: 0 0 0 3px #2fa37422;
-    }
-
-    /* Compact, balanced main container */
-    main {
-      max-width: 1380px;
-      margin: 0 auto;
-      padding: 26px clamp(16px, 2.5vw, 32px) 48px;
-    }
-
-    .eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--teal);
-      font: 500 10.5px 'DM Mono', monospace;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-    }
-
-    .eyebrow:before {
-      content: '';
-      width: 18px;
-      height: 1px;
-      background: var(--teal);
-    }
-
-    h1 {
-      font: 700 clamp(24px, 3vw, 34px)/1.15 'Manrope', sans-serif;
-      letter-spacing: -1px;
-      margin: 8px 0 6px;
-    }
-
-    .intro {
-      color: var(--muted);
-      max-width: 780px;
-      line-height: 1.55;
-      margin: 0;
-      font-size: 14px;
-    }
-
-    /* Primary 2-Column Workspace */
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.92fr);
-      gap: 18px;
-      margin-top: 20px;
-      align-items: stretch;
-    }
-
-    .card {
-      background: var(--paper);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-    }
-
-    .form-card {
-      padding: 22px;
-    }
-
-    .card-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-
-    .card-title {
-      font: 700 15.5px 'Manrope', sans-serif;
-      letter-spacing: -0.3px;
-    }
-
-    .card-sub {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 3px;
-    }
-
-    .step {
-      font: 500 10px 'DM Mono', monospace;
-      color: #829396;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      padding: 4px 8px;
-    }
-
-    .row2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .field {
-      margin-top: 14px;
-    }
-
-    .row2 .field {
-      margin-top: 0;
-    }
-
-    .fieldtop {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 6px;
-    }
-
-    .field label {
-      font-weight: 700;
-      font-size: 12.5px;
-    }
-
-    .optional {
-      font-size: 11px;
-      color: #8f9d9f;
-    }
-
-    .selectwrap {
-      position: relative;
-    }
-
-    .selectwrap:after {
-      content: '⌄';
-      position: absolute;
-      right: 12px;
-      top: 8px;
-      color: #64787c;
-      pointer-events: none;
-      font-size: 16px;
-    }
-
-    select {
-      width: 100%;
-      appearance: none;
-      height: 40px;
-      border: 1px solid #dce5e5;
-      border-radius: 9px;
-      padding: 0 34px 0 12px;
-      background: #fff;
-      color: var(--ink);
-      font-size: 13px;
-      outline: none;
-    }
-
-    select:focus,
-    textarea:focus {
-      border-color: #63aaa4;
-      box-shadow: 0 0 0 3px #087f7812;
-    }
-
-    .sequence {
-      width: 100%;
-      height: 82px;
-      resize: vertical;
-      border: 1px solid #dce5e5;
-      border-radius: 9px;
-      padding: 10px 12px;
-      color: #3f555b;
-      font: 12px/1.6 'DM Mono', monospace;
-      outline: none;
-    }
-
-    .sequence::placeholder {
-      color: #a1adaf;
-    }
-
-    .hint {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      color: #8c999b;
-      font-size: 10.5px;
-      margin-top: 5px;
-    }
-
-    .predict {
-      width: 100%;
-      margin-top: 18px;
-      height: 45px;
-      border: 0;
-      border-radius: 9px;
-      background: var(--teal);
-      color: #fff;
-      font-weight: 700;
-      font-size: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 9px;
-      transition: 0.18s;
     }
 
-    .predict:hover {
-      background: var(--teal-dark);
-      transform: translateY(-1px);
+    .brand-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
     }
 
-    .predict:disabled {
-      opacity: 0.65;
-      cursor: wait;
-      transform: none;
+    .brand-divider {
+      width: 1px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.28);
     }
 
-    .predict svg {
-      width: 16px;
-    }
-
-    .helper {
-      font-size: 10.5px;
-      color: #92a0a2;
-      text-align: center;
-      margin: 9px 0 0;
-    }
-
-    /* Right Card: Prediction Result */
-
-    .result {
-      padding: 24px;
-      overflow: hidden;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      gap: 18px;
-      /* Gives a natural, comfortable breathing room */
-    }
-
-    .result:before {
-      content: '';
-      position: absolute;
-      width: 210px;
-      height: 210px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #e7f4f1 0, transparent 70%);
-      right: -80px;
-      top: -90px;
-      pointer-events: none;
-    }
-
-    .resulthead {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .resultlabel {
-      font: 500 10.5px 'DM Mono', monospace;
-      letter-spacing: 1px;
+    .brand-subtitle {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: #cfe4fa;
       text-transform: uppercase;
-      color: #718187;
     }
 
-    .resultstamp {
-      font: 500 10px 'DM Mono', monospace;
-      color: #5b7873;
-      background: #eff6f4;
-      border: 1px solid #dcebe7;
-      border-radius: 20px;
-      padding: 5px 10px;
-    }
-
-    .scorebox {
-      position: relative;
-      display: flex;
-      align-items: flex-end;
-      gap: 10px;
-      margin: 18px 0 4px;
-    }
-
-    .score {
-      font: 700 58px/.95 'Manrope', sans-serif;
-      letter-spacing: -3px;
-      color: var(--ink);
-    }
-
-    .unit {
-      font: 500 12.5px 'DM Mono', monospace;
-      color: #697b80;
-      margin-bottom: 7px;
-    }
-
-    .verdict {
+    .status-pill {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      color: var(--teal-dark);
-      background: var(--mint);
-      font-size: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.74rem;
       font-weight: 700;
-      border-radius: 8px;
-      padding: 7px 11px;
-      width: max-content;
-      max-width: 100%;
-      margin-top: 8px;
+      letter-spacing: 0.08em;
+      color: #e6f6ff;
     }
 
-    .verdict i {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #149185;
-      flex: none;
-    }
-
-    .verdict.weak {
-      background: #fdf3f1;
-      color: #8c3b2b;
-    }
-
-    .verdict.weak i {
-      background: #d4654f;
-    }
-
-    .verdict.mod {
-      background: #fcf8eb;
-      color: #7d6219;
-    }
-
-    .verdict.mod i {
-      background: #cfa029;
-    }
-
-    .scale {
-      margin-top: 20px;
-    }
-
-    .scalelabel {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: #6f8084;
-      font-size: 11.5px;
-      margin-bottom: 8px;
-    }
-
-    .scalelabel strong {
-      color: #31464b;
-      font-weight: 700;
-    }
-
-    .track {
-      height: 9px;
-      border-radius: 10px;
-      background: linear-gradient(90deg, #f0c9bd 0 33.3%, #f0dfab 33.3% 66.6%, #b8dec7 66.6%);
-      position: relative;
-    }
-
-    .marker {
-      position: absolute;
-      left: 76%;
-      top: 50%;
-      width: 17px;
-      height: 17px;
-      border-radius: 50%;
-      background: #fff;
-      border: 4px solid var(--teal);
-      box-shadow: 0 2px 8px #164b4530;
-      transform: translate(-50%, -50%);
-      transition: left 0.35s ease;
-    }
-
-    .ticks {
-      display: flex;
-      justify-content: space-between;
-      font: 10px 'DM Mono', monospace;
-      color: #8f9c9e;
-      margin-top: 6px;
-    }
-
-    .thresholds {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-top: 14px;
-    }
-
-    .threshold {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 8px 10px;
-    }
-
-    .threshold b {
-      display: block;
-      font: 700 11px 'Manrope', sans-serif;
-      color: #31454a;
-    }
-
-    .threshold span {
-      font: 10px 'DM Mono', monospace;
-      color: #7c8d90;
-      display: block;
-      margin-top: 2px;
-    }
-
-    .threshold.good {
-      background: #f5faf6;
-      border-color: #deeee2;
-    }
-
-    .threshold.avg {
-      background: #fdfaf2;
-      border-color: #f2ebd6;
-    }
-
-    .threshold.poor {
-      background: #fcf6f4;
-      border-color: #f1e4df;
-    }
-
-    .divider {
-      border: 0;
-      border-top: 1px solid var(--line);
-      margin: 16px 0 14px;
-    }
-
-    .meta {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px 14px;
-    }
-
-    .meta label {
-      font: 9.5px 'DM Mono', monospace;
-      color: #8d9a9c;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .meta strong {
-      display: block;
-      margin-top: 2px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #3d5358;
-    }
-
-    /* Lower section */
-    .lower {
-      display: grid;
-      grid-template-columns: 1.08fr 0.92fr;
-      gap: 18px;
-      margin-top: 18px;
-    }
-
-    .info {
-      padding: 18px 22px;
-    }
-
-    .info h2 {
-      font: 700 13.5px 'Manrope', sans-serif;
-      margin: 0 0 9px;
-      color: var(--ink);
-    }
-
-    .info p {
-      font-size: 12px;
-      line-height: 1.6;
-      color: #5f7176;
-      margin: 0;
-    }
-
-    .notice {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      background: #f8f8f2;
-      border: 1px solid #eae9d8;
-      border-radius: 9px;
-      padding: 11px 12px;
-    }
-
-    .notice svg {
-      width: 16px;
-      height: 16px;
-      flex: none;
-      color: #a9914c;
-      margin-top: 1px;
-    }
-
-    .notice p {
-      font-size: 11.5px;
-      line-height: 1.55;
-      color: #67726f;
-    }
-
-    .notice strong {
-      color: #475853;
-    }
-
-    .warnings-box {
-      margin-top: 10px;
-      display: none;
-      background: #fdf4f2;
-      border: 1px solid #f0d3cd;
-      border-radius: 9px;
-      padding: 10px 12px;
-    }
-
-    .warnings-box.show {
-      display: block;
-    }
-
-    .warnings-title {
-      font: 700 11px 'Manrope', sans-serif;
-      color: #963827;
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .warnings-list {
-      margin: 0;
-      padding-left: 16px;
-      font-size: 11.5px;
-      line-height: 1.5;
-      color: #7f392c;
-    }
-
-    /* Accuracy Graph Card */
-    .chartcard {
-      margin-top: 18px;
-      padding: 20px 22px 18px;
-    }
-
-    .chart-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .charttitle {
-      font: 700 14.5px 'Manrope', sans-serif;
-    }
-
-    .chartsub {
-      font-size: 11.5px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
-    .metrics-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .pill {
-      font: 500 11px 'DM Mono', monospace;
-      background: #f3f7f6;
-      border: 1px solid #e1ecea;
-      color: #365055;
-      padding: 4px 9px;
-      border-radius: 7px;
-    }
-
-    .chartlegend {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      color: #6b7d81;
-      font-size: 11px;
-    }
-
-    .leg-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .leg-dot {
+    .status-dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #51a9a0;
-      opacity: 0.65;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
     }
 
-    .leg-line {
-      width: 14px;
-      height: 2px;
-      border-top: 2px dashed #8fa3a6;
+    .status-dot.loading {
+      background: #f59e0b;
+      box-shadow: 0 0 8px #f59e0b;
     }
 
-    .leg-cur {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: #087f78;
-      border: 2px solid #fff;
-      box-shadow: 0 0 0 1.5px #087f78;
-    }
-
-    .chart-wrap {
-      margin-top: 14px;
+    /* Hero Banner */
+    .hero {
       position: relative;
+      overflow: hidden;
+      padding: 34px 28px 28px;
+      background: linear-gradient(135deg, #d7ebfc 0%, #eaf4fd 55%, #cfe6fb 100%);
+      border-bottom: 1px solid #cce0f4;
+    }
+
+    .hero-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--navy-900);
+      letter-spacing: -0.015em;
+      margin-bottom: 6px;
+    }
+
+    .hero p {
+      font-size: 1.02rem;
+      color: #2c4c70;
+      font-weight: 500;
+    }
+
+    .hero-graphic {
+      position: absolute;
+      right: -20px;
+      top: -25px;
+      width: 380px;
       height: 220px;
-      width: 100%;
-    }
-
-    .chart-wrap svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    .footer {
-      display: flex;
-      justify-content: space-between;
-      gap: 14px;
-      color: #8c999b;
-      font-size: 11px;
-      margin-top: 20px;
-      padding: 0 2px;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translate(-50%, 20px);
-      background: #173a38;
-      color: #fff;
-      border-radius: 10px;
-      padding: 11px 16px;
-      font-size: 12.5px;
-      opacity: 0;
+      opacity: 0.35;
       pointer-events: none;
-      transition: 0.25s;
-      box-shadow: 0 10px 30px #163a3530;
-      z-index: 50;
+      z-index: 1;
     }
 
-    .toast.show {
-      opacity: 1;
-      transform: translate(-50%, 0);
+    /* Main Container */
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 22px 24px 48px;
+    }
+
+    /* Two Column Workspace */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 18px;
     }
 
     @media (max-width: 880px) {
-
-      .layout,
-      .lower,
-      .row2 {
+      .workspace-grid {
         grid-template-columns: 1fr;
       }
     }
+
+    /* Card Styling */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: linear-gradient(90deg, var(--navy-900) 0%, var(--navy-800) 100%);
+      color: #ffffff;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .card-header svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    /* Form Controls */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      margin-bottom: 7px;
+    }
+
+    .form-label svg {
+      width: 16px;
+      height: 16px;
+      color: var(--blue-600);
+    }
+
+    select, textarea {
+      width: 100%;
+      border: 1px solid #c6d8ec;
+      border-radius: var(--radius-sm);
+      background: #f8fbff;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+
+    select {
+      padding: 9px 12px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    textarea {
+      padding: 10px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      resize: vertical;
+      min-height: 68px;
+      margin-top: 8px;
+    }
+
+    textarea::placeholder {
+      font-family: 'Inter', sans-serif;
+      color: #8aa0ba;
+    }
+
+    select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--blue-500);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(43, 125, 233, 0.14);
+    }
+
+    .char-counter {
+      text-align: right;
+      font-size: 0.75rem;
+      color: var(--text-light);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    .action-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    .btn-predict {
+      background: linear-gradient(135deg, var(--navy-900) 0%, var(--blue-600) 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 11px 20px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(13, 43, 82, 0.2);
+      transition: transform 0.12s, box-shadow 0.12s, opacity 0.15s;
+    }
+
+    .btn-predict:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(13, 43, 82, 0.28);
+    }
+
+    .btn-predict:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .helper-hint {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border-left: 1px solid var(--border);
+      padding-left: 12px;
+    }
+
+    /* Prediction Results Card */
+    .results-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      height: calc(100% - 44px);
+      align-items: center;
+    }
+
+    @media (max-width: 540px) {
+      .results-split {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .score-panel {
+      text-align: center;
+      padding: 18px 12px;
+      border-right: 1px solid #e6eff8;
+    }
+
+    @media (max-width: 540px) {
+      .score-panel {
+        border-right: none;
+        border-bottom: 1px solid #e6eff8;
+      }
+    }
+
+    .panel-kicker {
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: var(--navy-900);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      line-height: 1.35;
+    }
+
+    .big-score {
+      font-size: 3.3rem;
+      font-weight: 800;
+      color: var(--navy-950);
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 6px;
+    }
+
+    .big-score.placeholder {
+      color: #8ba3bf;
+    }
+
+    .score-unit {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--blue-600);
+      margin-bottom: 6px;
+    }
+
+    .score-status {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .affinity-badge {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .badge-idle {
+      background: #eef4fb;
+      color: var(--text-muted);
+    }
+
+    .badge-weak {
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    .badge-moderate {
+      background: #ccfbf1;
+      color: #0f766e;
+    }
+
+    .badge-strong {
+      background: #dbeafe;
+      color: #1e3a8a;
+    }
+
+    .pie-panel {
+      text-align: center;
+      padding: 12px 8px;
+    }
+
+    .pie-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .legend-list {
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-main);
+      padding: 3px 8px;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+
+    .legend-item.active {
+      background: #eef6ff;
+      box-shadow: inset 0 0 0 1px #bfd9f6;
+    }
+
+    .legend-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Accordion Info Bars */
+    .accordion-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .accordion-item {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: 0 3px 10px rgba(13, 43, 82, 0.04);
+      overflow: hidden;
+    }
+
+    .accordion-trigger {
+      width: 100%;
+      background: transparent;
+      border: none;
+      padding: 13px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+    }
+
+    .accordion-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .acc-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--navy-900);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .acc-icon.warn {
+      background: #1d4ed8;
+    }
+
+    .acc-icon.warn.has-warnings {
+      background: #d97706;
+    }
+
+    .acc-title {
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: var(--navy-900);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .acc-summary {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .acc-chevron {
+      width: 18px;
+      height: 18px;
+      color: var(--navy-900);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .accordion-item.open .acc-chevron {
+      transform: rotate(180deg);
+    }
+
+    .accordion-content {
+      display: none;
+      padding: 0 18px 15px 62px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-top: 1px solid #eef4fb;
+      padding-top: 12px;
+    }
+
+    .accordion-item.open .accordion-content {
+      display: block;
+    }
+
+    .warning-list {
+      margin: 0;
+      padding-left: 18px;
+      color: #b45309;
+      font-weight: 500;
+    }
+
+    /* Model Performance Section */
+    .perf-grid {
+      display: grid;
+      grid-template-columns: 2.15fr 1fr;
+      gap: 22px;
+      align-items: center;
+    }
+
+    @media (max-width: 860px) {
+      .perf-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .chart-title-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .chart-title {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: var(--navy-900);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .chart-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .svg-box {
+      width: 100%;
+      background: #fafdff;
+      border: 1px solid #e1ecf7;
+      border-radius: var(--radius-md);
+      padding: 10px 10px 6px;
+    }
+
+    .chart-legend {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-top: 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .c-leg-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .metrics-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .metric-row-card {
+      background: #f4f9fe;
+      border: 1px solid #dce9f7;
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .metric-name {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--navy-900);
+    }
+
+    .metric-desc {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .metric-val {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--blue-600);
+      font-variant-numeric: tabular-nums;
+    }
   </style>
 </head>
-
 <body>
-  <header class="topbar">
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
     <div class="brand">
-      <span class="brandmark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M8 3v5l-4 7.3A3.1 3.1 0 0 0 6.7 20h10.6a3.1 3.1 0 0 0 2.7-4.7L16 8V3M7 3h10M7 14h10"></path>
-          <circle cx="10" cy="16" r=".7" fill="currentColor"></circle>
-          <circle cx="15" cy="12" r=".7" fill="currentColor"></circle>
+      <div class="brand-logo" aria-hidden="true">
+        <svg viewBox="0 0 36 36" width="32" height="32" fill="none">
+          <path d="M10 4C10 11 26 13 26 18C26 23 10 25 10 32" stroke="#38bdf8" stroke-width="2.6" stroke-linecap="round"/>
+          <path d="M26 4C26 11 10 13 10 18C10 23 26 25 26 32" stroke="#2dd4bf" stroke-width="2.6" stroke-linecap="round"/>
+          <line x1="13" y1="8" x2="23" y2="8" stroke="#bae6fd" stroke-width="2" stroke-linecap="round"/>
+          <line x1="15" y1="18" x2="21" y2="18" stroke="#bae6fd" stroke-width="2" stroke-linecap="round"/>
+          <line x1="13" y1="28" x2="23" y2="28" stroke="#bae6fd" stroke-width="2" stroke-linecap="round"/>
         </svg>
-      </span>
-      <span>deepdta<small>BINDING AFFINITY STUDIO</small></span>
+      </div>
+      <span class="brand-title">DeepDTA</span>
+      <span class="brand-divider"></span>
+      <span class="brand-subtitle">Binding Affinity Studio</span>
     </div>
-    <span class="status"><i class="dot"></i><span id="modelStatusText">Models ready (Davis &amp; KIBA)</span></span>
+    <div class="status-pill" id="statusPill">
+      <span class="status-dot loading" id="statusDot"></span>
+      <span id="statusText">LOADING MODELS</span>
+    </div>
   </header>
 
-  <main>
-    <div class="eyebrow">Prediction workspace</div>
-    <h1>Predict the drug-target binding affinity</h1>
-    <p class="intro">Estimate how strongly a small molecule may bind to a protein target. Choose a benchmark, select
-      independent drugs and proteins or paste custom sequences, and review predictions.</p>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h1>DRUG&ndash;TARGET BINDING AFFINITY</h1>
+      <p>Predict how strongly a drug binds to its target protein</p>
+    </div>
+    <!-- Subtle Molecular Ribbon Illustration -->
+    <svg class="hero-graphic" viewBox="0 0 400 220" fill="none" aria-hidden="true">
+      <circle cx="290" cy="70" r="46" stroke="#1d63b8" stroke-width="10" stroke-opacity="0.35"/>
+      <circle cx="340" cy="130" r="38" stroke="#14b8a6" stroke-width="9" stroke-opacity="0.35"/>
+      <path d="M210 160 C240 60, 310 40, 350 110 C380 160, 310 200, 265 155" stroke="#0d2b52" stroke-width="12" stroke-linecap="round" stroke-opacity="0.25"/>
+      <circle cx="235" cy="95" r="8" fill="#1d63b8" fill-opacity="0.45"/>
+      <circle cx="315" cy="52" r="10" fill="#14b8a6" fill-opacity="0.5"/>
+      <circle cx="362" cy="118" r="7" fill="#0d2b52" fill-opacity="0.4"/>
+      <line x1="235" y1="95" x2="315" y2="52" stroke="#1d63b8" stroke-width="3" stroke-opacity="0.4"/>
+      <line x1="315" y1="52" x2="362" y2="118" stroke="#14b8a6" stroke-width="3" stroke-opacity="0.4"/>
+    </svg>
+  </section>
 
-    <div class="layout">
-      <!-- Left Card: Input -->
-      <section class="card form-card">
-        <div class="card-head">
-          <div>
-            <div class="card-title">Set up your prediction</div>
-            <div class="card-sub">Choose a benchmark dataset, pick drugs and proteins independently, or paste custom
-              sequences.</div>
-          </div>
-          <span class="step">01 / INPUT</span>
+  <!-- Main Workspace -->
+  <main class="container">
+    <div class="workspace-grid">
+
+      <!-- Left Card: Prediction Inputs -->
+      <section class="card">
+        <div class="card-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M9 3h6M10 3v6l-5 8.5A1.5 1.5 0 0 0 6.3 20h11.4a1.5 1.5 0 0 0 1.3-2.5L14 9V3"/>
+            <path d="M7.5 15h9" stroke="#2dd4bf"/>
+          </svg>
+          <span>Prediction Inputs</span>
         </div>
+        <div class="card-body">
 
-        <div class="field">
-          <div class="fieldtop"><label for="dataset">Benchmark dataset</label></div>
-          <div class="selectwrap">
-            <select id="dataset">
-              <option value="Davis">Davis (pKd)</option>
-              <option value="KIBA">KIBA (KIBA score)</option>
+          <div class="form-group">
+            <label class="form-label" for="datasetSelect">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+              </svg>
+              Benchmark Dataset
+            </label>
+            <select id="datasetSelect">
+              <option value="Davis">Davis (Kinase Dissociation Constant — pKd)</option>
+              <option value="KIBA">KIBA (Kinase Inhibitor Bioactivity — KIBA Score)</option>
             </select>
           </div>
-        </div>
 
-        <div class="row2" style="margin-top: 14px;">
-          <div class="field">
-            <div class="fieldtop">
-              <label for="drugSelect">Drug preset</label>
-              <span class="optional">Independent</span>
+          <div class="form-group">
+            <label class="form-label" for="drugPresetSelect">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/>
+                <path d="m8.5 8.5 7 7"/>
+              </svg>
+              Drug Preset
+            </label>
+            <select id="drugPresetSelect">
+              <option value="custom">Custom</option>
+            </select>
+            <textarea id="smilesInput" placeholder="Enter SMILES notation..." spellcheck="false"></textarea>
+            <div class="char-counter" id="smilesCounter">0 characters</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="proteinPresetSelect">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 15c2-4 6-4 8 0s6 4 8 0"/>
+                <path d="M4 9c2-4 6-4 8 0s6 4 8 0"/>
+              </svg>
+              Protein Preset
+            </label>
+            <select id="proteinPresetSelect">
+              <option value="custom">Custom</option>
+            </select>
+            <textarea id="proteinInput" placeholder="Enter amino acid sequence..." spellcheck="false"></textarea>
+            <div class="char-counter" id="proteinCounter">0 residues</div>
+          </div>
+
+          <div class="action-row">
+            <button type="button" class="btn-predict" id="predictBtn" disabled>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/>
+              </svg>
+              Predict Binding Affinity
+            </button>
+            <div class="helper-hint" id="helperHint">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4M12 8h.01"/>
+              </svg>
+              <span>Complete both inputs to run a prediction</span>
             </div>
-            <div class="selectwrap">
-              <select id="drugSelect">
-                <option value="">— Custom SMILES —</option>
-              </select>
-            </div>
           </div>
 
-          <div class="field">
-            <div class="fieldtop">
-              <label for="targetSelect">Protein preset</label>
-              <span class="optional">Independent</span>
-            </div>
-            <div class="selectwrap">
-              <select id="targetSelect">
-                <option value="">— Custom Sequence —</option>
-              </select>
-            </div>
-          </div>
         </div>
+      </section>
 
-        <div class="field" style="margin-top: 14px;">
-          <div class="fieldtop">
-            <label for="drug">Drug molecule</label>
-            <span class="optional" id="smilesHintBadge">SMILES notation</span>
-          </div>
-          <textarea class="sequence" id="drug" placeholder="Paste a SMILES string…"></textarea>
-          <div class="hint">
-            <span id="smilesFormatNote">Use canonical uppercase SMILES notation.</span>
-            <span id="drugCount">0 characters</span>
-          </div>
-        </div>
-
-        <div class="field">
-          <div class="fieldtop">
-            <label for="target">Protein target</label>
-            <span class="optional">Amino acid sequence</span>
-          </div>
-          <textarea class="sequence" id="target" placeholder="Paste a protein sequence…"></textarea>
-          <div class="hint">
-            <span>One-letter amino acid codes. FASTA header is optional.</span>
-            <span id="targetCount">0 residues</span>
-          </div>
-        </div>
-
-        <button class="predict" id="predict" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M5 12h14M13 6l6 6-6 6"></path>
+      <!-- Right Card: Prediction Results -->
+      <section class="card">
+        <div class="card-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="4" y="13" width="4" height="7" rx="1" fill="#2dd4bf" stroke="none"/>
+            <rect x="10" y="9" width="4" height="11" rx="1" fill="#ffffff" stroke="none"/>
+            <rect x="16" y="4" width="4" height="16" rx="1" fill="#38bdf8" stroke="none"/>
           </svg>
-          Predict binding affinity
+          <span>Prediction Results</span>
+        </div>
+        <div class="card-body results-split">
+
+          <!-- Left Half: Numeric Affinity Score -->
+          <div class="score-panel">
+            <div class="panel-kicker">Predicted<br/>Binding Affinity</div>
+            <div class="big-score placeholder" id="scoreValue">—</div>
+            <div class="score-unit" id="scoreUnit">pKd (-log10 M)</div>
+            <div class="score-status" id="scoreStatus">(awaiting input)</div>
+            <div>
+              <span class="affinity-badge badge-idle" id="affinityBadge" style="display:none;"></span>
+            </div>
+          </div>
+
+          <!-- Right Half: Theme-Matched Binding Affinity Range Pie Chart -->
+          <div class="pie-panel">
+            <div class="panel-kicker">Binding Affinity Range</div>
+            <div class="pie-wrapper">
+              <svg width="104" height="104" viewBox="0 0 120 120" id="affinityPieSvg" aria-label="Binding Affinity Range Chart">
+                <!-- Weak slice (Sky Cyan #56b4e9): -90deg to 30deg (120deg) -->
+                <path id="sliceWeak" d="M60,60 L60,10 A50,50 0 0,1 103.3,85 Z" fill="#67c3ea" stroke="#ffffff" stroke-width="2"/>
+                <!-- Moderate slice (Ocean Teal #14b8a6): 30deg to 150deg (120deg) -->
+                <path id="sliceModerate" d="M60,60 L103.3,85 A50,50 0 0,1 16.7,85 Z" fill="#14b8a6" stroke="#ffffff" stroke-width="2"/>
+                <!-- Strong slice (Deep Navy #1d4ed8): 150deg to 270deg (120deg) -->
+                <path id="sliceStrong" d="M60,60 L16.7,85 A50,50 0 0,1 60,10 Z" fill="#1e40af" stroke="#ffffff" stroke-width="2"/>
+              </svg>
+              <div class="legend-list">
+                <div class="legend-item" id="legWeak">
+                  <span class="legend-dot" style="background:#67c3ea;"></span>
+                  <span>Weak</span>
+                </div>
+                <div class="legend-item" id="legModerate">
+                  <span class="legend-dot" style="background:#14b8a6;"></span>
+                  <span>Moderate</span>
+                </div>
+                <div class="legend-item" id="legStrong">
+                  <span class="legend-dot" style="background:#1e40af;"></span>
+                  <span>Strong</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Three Collapsible Info Bars -->
+    <section class="accordion-stack">
+      <div class="accordion-item" id="accRead">
+        <button type="button" class="accordion-trigger" onclick="toggleAcc('accRead')">
+          <div class="accordion-left">
+            <span class="acc-icon">i</span>
+            <div>
+              <div class="acc-title">How to Read This Result</div>
+              <div class="acc-summary" id="readSummary">The model predicts binding affinity based on the input drug and target protein sequences.</div>
+            </div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
         </button>
-        <p class="helper">Predictions are computational estimates for research use.</p>
-      </section>
-
-      <!-- Right Card: Prediction Result -->
-      <section class="card result" aria-live="polite">
-        <div>
-          <div class="resulthead">
-            <div class="resultlabel">Prediction result</div>
-            <span class="resultstamp" id="resultDataset">DAVIS SCALE</span>
-          </div>
-
-          <div class="scorebox">
-            <div class="score" id="score">—</div>
-            <div class="unit" id="unit">pKd</div>
-          </div>
-
-          <div class="verdict" id="verdict">
-            <i></i><span id="verdictText">Select presets or run a prediction</span>
-          </div>
-
-          <div class="scale">
-            <div class="scalelabel">
-              <strong id="scaleHeading">Davis affinity interpretation</strong>
-              <span id="scaleRange">5.0 — 10.5 pKd</span>
-            </div>
-            <div class="track">
-              <div class="marker" id="marker" style="left: 50%;"></div>
-            </div>
-            <div class="ticks" id="ticks">
-              <span>5.0</span><span>6.0</span><span>7.0 (Cutoff)</span><span>10.5+</span>
-            </div>
-          </div>
-
-          <div class="thresholds" id="thresholds"></div>
-        </div>
-
-        <div>
-          <hr class="divider">
-          <div class="meta">
-            <div><label>Benchmark</label><strong id="benchMeta">Davis</strong></div>
-            <div><label>Run status</label><strong id="runStatus">Ready</strong></div>
-            <div><label>Drug input</label><strong id="drugMeta">SMILES · 0 chars</strong></div>
-            <div><label>Target input</label><strong id="targetMeta">Sequence · 0 residues</strong></div>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <!-- Row 2: How to read this result & About this estimate -->
-    <div class="lower">
-      <section class="card info">
-        <h2>How to read this result</h2>
-        <p id="howToReadText">
-          Scores are interpreted on the selected benchmark’s scale. On <strong>Davis</strong>, higher
-          <strong>pKd</strong> values indicate stronger predicted binding (values ≥ 7.0 pKd represent active/strong
-          kinase binding). On <strong>KIBA</strong>, higher scores reflect stronger integrated bioactivity (values ≥
-          12.1 indicate strong binding). Compare candidates strictly within the same dataset.
-        </p>
-      </section>
-
-      <section class="card info">
-        <h2>About this estimate</h2>
-        <div class="notice">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <circle cx="12" cy="12" r="9"></circle>
-            <path d="M12 11v5m0-8h.01"></path>
-          </svg>
-          <p>
-            <strong>Research estimate, not a measured result.</strong> Predictions depend on SMILES formatting, sequence
-            length limits, and training distribution. Experimental validation is required before drawing biological
-            conclusions.
-          </p>
-        </div>
-        <div class="warnings-box" id="warningsBox">
-          <div class="warnings-title">⚠ Input &amp; Sequence Warnings</div>
-          <ul class="warnings-list" id="warningsList"></ul>
-        </div>
-      </section>
-    </div>
-
-    <!-- Row 3: Accuracy Graph -->
-    <section class="card chartcard">
-      <div class="chart-head">
-        <div>
-          <div class="charttitle" id="chartTitle">Model accuracy graph — Davis benchmark</div>
-          <div class="chartsub" id="chartSub">Predicted vs. experimentally measured affinity on held-out test pairs
-          </div>
-        </div>
-        <div class="metrics-pills" id="metricsPills"></div>
-        <div class="chartlegend">
-          <span class="leg-item"><i class="leg-dot"></i> Test set pairs</span>
-          <span class="leg-item"><i class="leg-line"></i> Ideal (y = x)</span>
-          <span class="leg-item"><i class="leg-cur"></i> Current prediction</span>
+        <div class="accordion-content" id="readContent">
+          For the <strong>Davis</strong> dataset, scores are reported as <strong>pK<sub>d</sub></strong> (higher values indicate tighter binding; scores &ge; 7.0 typically indicate active binding, corresponding to K<sub>d</sub> &le; 100 nM). For <strong>KIBA</strong>, scores reflect integrated bioactivity (values &ge; 12.1 generally indicate strong interaction).
         </div>
       </div>
-      <div class="chart-wrap">
-        <svg id="accuracySvg" viewBox="0 0 920 220" preserveAspectRatio="xMidYMid meet"
-          aria-label="Predicted vs Actual Accuracy Graph"></svg>
+
+      <div class="accordion-item" id="accEstimate">
+        <button type="button" class="accordion-trigger" onclick="toggleAcc('accEstimate')">
+          <div class="accordion-left">
+            <span class="acc-icon">?</span>
+            <div>
+              <div class="acc-title">About This Estimate</div>
+              <div class="acc-summary">Results are estimates and may vary based on the dataset and model used.</div>
+            </div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </button>
+        <div class="accordion-content">
+          Predictions are generated by a dual 1D Convolutional Neural Network (DeepDTA) trained on kinase&ndash;inhibitor pairs. While useful for rapid virtual screening, computational scores should be validated with experimental assays before downstream use.
+        </div>
+      </div>
+
+      <div class="accordion-item" id="accWarnings">
+        <button type="button" class="accordion-trigger" onclick="toggleAcc('accWarnings')">
+          <div class="accordion-left">
+            <span class="acc-icon warn" id="warnIcon">!</span>
+            <div>
+              <div class="acc-title">Input and Sequence Warnings</div>
+              <div class="acc-summary" id="warnSummary">Please ensure valid SMILES and protein sequences for accurate predictions.</div>
+            </div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </button>
+        <div class="accordion-content" id="warnContent">
+          No active sequence warnings. Inputs longer than the model's maximum window (85 characters for Davis SMILES, 100 for KIBA SMILES, and 1,200/1,000 residues for proteins) are automatically truncated.
+        </div>
       </div>
     </section>
 
-    <div class="footer">
-      <span>DeepDTA · Drug–Target Binding Affinity Prediction</span>
-      <span>Scores are dataset-specific · Compare like with like</span>
-    </div>
+    <!-- Bottom Card: Model Performance -->
+    <section class="card">
+      <div class="card-header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" stroke="#2dd4bf"/>
+          <polyline points="16 7 22 7 22 13" stroke="#2dd4bf"/>
+        </svg>
+        <span>Model Performance</span>
+      </div>
+      <div class="card-body perf-grid">
+
+        <!-- Left: Scatter Plot -->
+        <div>
+          <div class="chart-title-row">
+            <span class="chart-title">Predicted vs. Experimental Affinity</span>
+            <span class="chart-subtitle" id="chartSubtitle">Held-out test set (500 random points shown)</span>
+          </div>
+          <div class="svg-box">
+            <svg id="scatterSvg" viewBox="0 0 640 270" width="100%" height="auto" role="img" aria-label="Predicted vs Experimental Affinity Scatter Plot"></svg>
+          </div>
+          <div class="chart-legend">
+            <span class="c-leg-item">
+              <svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="#2b7de9" fill-opacity="0.72"/></svg>
+              Data points
+            </span>
+            <span class="c-leg-item">
+              <svg width="16" height="16"><circle cx="8" cy="8" r="6" fill="none" stroke="#0d2b52" stroke-width="2"/><circle cx="8" cy="8" r="2.8" fill="#14b8a6"/></svg>
+              Your prediction
+            </span>
+            <span class="c-leg-item">
+              <svg width="22" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#64748b" stroke-width="1.8" stroke-dasharray="4 3"/></svg>
+              Ideal (y = x)
+            </span>
+            <span class="c-leg-item">
+              <svg width="22" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#14b8a6" stroke-width="2.2"/></svg>
+              Trend line
+            </span>
+          </div>
+        </div>
+
+        <!-- Right: Stacked Metric Cards -->
+        <div class="metrics-stack">
+          <div class="metric-row-card">
+            <div>
+              <div class="metric-name">CI</div>
+              <div class="metric-desc">Concordance Index</div>
+            </div>
+            <div class="metric-val" id="metricCI">—</div>
+          </div>
+          <div class="metric-row-card">
+            <div>
+              <div class="metric-name">MSE</div>
+              <div class="metric-desc">Mean Squared Error</div>
+            </div>
+            <div class="metric-val" id="metricMSE">—</div>
+          </div>
+          <div class="metric-row-card">
+            <div>
+              <div class="metric-name">R&sup2;m</div>
+              <div class="metric-desc">Modified RÂ²</div>
+            </div>
+            <div class="metric-val" id="metricR2M">—</div>
+          </div>
+          <div class="metric-row-card">
+            <div>
+              <div class="metric-name">AUPR</div>
+              <div class="metric-desc">Precision-Recall Area</div>
+            </div>
+            <div class="metric-val" id="metricAUPR">—</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
   </main>
 
-  <div class="toast" id="toast"></div>
-
   <script>
-    const $ = s => document.querySelector(s);
-    let META = null;
-    let currentMeasured = null;
-    let currentPredicted = null;
+    let META = {};
+    let currentDataset = "Davis";
+    let lastPrediction = null;
 
-    function toast(msg) {
-      const el = $('#toast');
-      el.textContent = msg;
-      el.classList.add('show');
-      clearTimeout(el._t);
-      el._t = setTimeout(() => el.classList.remove('show'), 3200);
+    const datasetSelect = document.getElementById("datasetSelect");
+    const drugPresetSelect = document.getElementById("drugPresetSelect");
+    const proteinPresetSelect = document.getElementById("proteinPresetSelect");
+    const smilesInput = document.getElementById("smilesInput");
+    const proteinInput = document.getElementById("proteinInput");
+    const smilesCounter = document.getElementById("smilesCounter");
+    const proteinCounter = document.getElementById("proteinCounter");
+    const predictBtn = document.getElementById("predictBtn");
+    const helperHint = document.getElementById("helperHint");
+
+    function toggleAcc(id) {
+      document.getElementById(id).classList.toggle("open");
     }
 
-    function updateCounts() {
-      const ds = $('#dataset').value;
-      const maxS = META && META[ds] ? META[ds].max_smiles : (ds === 'KIBA' ? 100 : 85);
-      const maxP = META && META[ds] ? META[ds].max_protein : (ds === 'KIBA' ? 1000 : 1200);
-      const d = $('#drug').value.replace(/\s+/g, '').length;
-      const t = $('#target').value.replace(/>[^\r\n]*[\r\n]?/g, '').replace(/\s+/g, '').length;
-      $('#drugCount').textContent = `${d} / ${maxS} max chars`;
-      $('#targetCount').textContent = `${t} / ${maxP} max residues`;
-      $('#drugMeta').textContent = `SMILES · ${d} chars`;
-      $('#targetMeta').textContent = `Sequence · ${t} residues`;
+    function updateCountersAndButton() {
+      const sLen = smilesInput.value.trim().length;
+      const pLen = proteinInput.value.trim().length;
+      const m = META[currentDataset];
+      const maxS = m ? m.max_smiles : "";
+      const maxP = m ? m.max_protein : "";
+
+      smilesCounter.textContent = maxS ? `${sLen} / ${maxS} characters` : `${sLen} characters`;
+      proteinCounter.textContent = maxP ? `${pLen} / ${maxP} residues` : `${pLen} residues`;
+
+      const ready = sLen > 0 && pLen > 0;
+      predictBtn.disabled = !ready;
+      helperHint.querySelector("span").textContent = ready
+        ? "Ready to predict binding affinity"
+        : "Complete both inputs to run a prediction";
     }
 
-    function renderWarnings(warnings) {
-      const box = $('#warningsBox');
-      const list = $('#warningsList');
-      list.innerHTML = '';
-      if (warnings && warnings.length > 0) {
-        warnings.forEach(w => {
-          const li = document.createElement('li');
-          li.textContent = w;
-          list.appendChild(li);
-        });
-        box.classList.add('show');
-      } else {
-        box.classList.remove('show');
-      }
-    }
+    function populatePresets(datasetKey) {
+      const m = META[datasetKey];
+      if (!m || !m.examples) return;
 
-    function updateResultUI(ds, value, label, statusText, measuredVal = null) {
-      const cfg = META[ds];
-      currentPredicted = value;
-      if (measuredVal !== null) currentMeasured = measuredVal;
+      const ex = m.examples || {};
+      const drugs = Array.isArray(ex) ? ex : (ex.drugs || ex.ligands || []);
+      const proteins = Array.isArray(ex) ? ex : (ex.proteins || ex.targets || []);
+      m._parsedDrugs = drugs;
+      m._parsedProteins = proteins;
 
-      $('#score').textContent = typeof value === 'number' ? value.toFixed(3) : '—';
-      $('#unit').textContent = cfg.unit;
-      $('#benchMeta').textContent = ds;
-      $('#runStatus').textContent = statusText;
-
-      const verdictEl = $('#verdict');
-      verdictEl.className = 'verdict';
-      if (typeof value === 'number') {
-        if (value < cfg.weak_below) verdictEl.classList.add('weak');
-        else if (value < cfg.binds_cutoff) verdictEl.classList.add('mod');
-      }
-      $('#verdictText').textContent = label;
-
-      if (typeof value === 'number') {
-        const pct = Math.max(2, Math.min(98, ((value - cfg.scale_min) / (cfg.scale_max - cfg.scale_min)) * 100));
-        $('#marker').style.left = `${pct}%`;
-      } else {
-        $('#marker').style.left = '50%';
-      }
-
-      renderAccuracyChart(ds);
-    }
-
-    function applyDatasetUI(ds, autoLoadFirst = true) {
-      if (!META || !META[ds]) return;
-      const cfg = META[ds];
-      const isKiba = ds === 'KIBA';
-
-      $('#resultDataset').textContent = `${ds.toUpperCase()} SCALE`;
-      $('#scaleHeading').textContent = `${ds} affinity interpretation`;
-      $('#unit').textContent = cfg.unit;
-      $('#scaleRange').textContent = `${cfg.scale_min.toFixed(1)} — ${cfg.scale_max.toFixed(1)} ${cfg.unit}`;
-
-      $('#smilesFormatNote').textContent = isKiba
-        ? 'Supports canonical SMILES including brackets [ ] and +/- charges.'
-        : 'Use canonical uppercase SMILES without brackets (e.g., C1=CC=CC=C1).';
-
-      if (isKiba) {
-        $('#ticks').innerHTML = `<span>9.0</span><span>11.2</span><span>12.1 (Cutoff)</span><span>15.5+</span>`;
-        $('#thresholds').innerHTML = `
-          <div class="threshold poor"><b>Weak</b><span>&lt; 11.2 KIBA</span></div>
-          <div class="threshold avg"><b>Moderate</b><span>11.2–12.1 KIBA</span></div>
-          <div class="threshold good"><b>Strong</b><span>&ge; 12.1 KIBA</span></div>
-        `;
-      } else {
-        $('#ticks').innerHTML = `<span>5.0</span><span>6.0</span><span>7.0 (Cutoff)</span><span>10.5+</span>`;
-        $('#thresholds').innerHTML = `
-          <div class="threshold poor"><b>Weak</b><span>&lt; 6.0 pKd</span></div>
-          <div class="threshold avg"><b>Moderate</b><span>6.0–7.0 pKd</span></div>
-          <div class="threshold good"><b>Strong</b><span>&ge; 7.0 pKd</span></div>
-        `;
-      }
-
-      // Populate separate Drug and Protein dropdowns independently
-      const drugSel = $('#drugSelect');
-      const targetSel = $('#targetSelect');
-      drugSel.innerHTML = '<option value="">— Custom SMILES —</option>';
-      targetSel.innerHTML = '<option value="">— Custom Sequence —</option>';
-
-      cfg.examples.forEach((ex, idx) => {
-        const optD = document.createElement('option');
-        optD.value = String(idx);
-        optD.textContent = ex.drug_id;
-        drugSel.appendChild(optD);
-
-        const optT = document.createElement('option');
-        optT.value = String(idx);
-        optT.textContent = ex.protein_id;
-        targetSel.appendChild(optT);
+      drugPresetSelect.innerHTML = `<option value="custom">Custom</option>`;
+      drugs.forEach((d, idx) => {
+        const opt = document.createElement("option");
+        opt.value = String(idx);
+        opt.textContent = d.drug_id || d.name || `Drug ${idx + 1}`;
+        drugPresetSelect.appendChild(opt);
       });
 
-      drugSel.onchange = () => {
-        const idx = drugSel.value;
-        if (idx !== '') {
-          $('#drug').value = cfg.examples[Number(idx)].smiles;
-          currentMeasured = null;
-          updateCounts();
-        }
-      };
+      proteinPresetSelect.innerHTML = `<option value="custom">Custom</option>`;
+      proteins.forEach((p, idx) => {
+        const opt = document.createElement("option");
+        opt.value = String(idx);
+        opt.textContent = p.protein_id || p.name || `Protein ${idx + 1}`;
+        proteinPresetSelect.appendChild(opt);
+      });
 
-      targetSel.onchange = () => {
-        const idx = targetSel.value;
-        if (idx !== '') {
-          $('#target').value = cfg.examples[Number(idx)].sequence;
-          currentMeasured = null;
-          updateCounts();
-        }
-      };
-
-      // Update Metrics Pills
-      const m = cfg.metrics;
-      $('#chartTitle').textContent = `Model accuracy graph — ${ds} test benchmark`;
-      $('#chartSub').textContent = `Predicted vs. measured affinity across ${m.n_test.toLocaleString()} held-out test pairs (100 epochs)`;
-      $('#metricsPills').innerHTML = `
-        <span class="pill">CI: ${m.CI.toFixed(3)}</span>
-        <span class="pill">MSE: ${m.MSE.toFixed(3)}</span>
-        <span class="pill">r²m: ${m.r2m.toFixed(3)}</span>
-        <span class="pill">AUPR: ${m.AUPR.toFixed(3)}</span>
-      `;
-
-      if (autoLoadFirst && cfg.examples.length > 0) {
-        drugSel.value = '0';
-        targetSel.value = '0';
-        $('#drug').value = cfg.examples[0].smiles;
-        $('#target').value = cfg.examples[0].sequence;
-        currentMeasured = cfg.examples[0].measured;
-        updateCounts();
-        runPrediction(true);
-      } else {
-        updateCounts();
-        renderAccuracyChart(ds);
-      }
+      // Keep inputs empty on initial load or dataset switch so user explicitly chooses or enters
+      drugPresetSelect.value = "custom";
+      proteinPresetSelect.value = "custom";
+      smilesInput.value = "";
+      proteinInput.value = "";
+      lastPrediction = null;
+      resetResultCard();
+      updateCountersAndButton();
     }
 
-    async function runPrediction(isExample = false) {
-      const ds = $('#dataset').value;
-      const smiles = $('#drug').value.trim();
-      const protein = $('#target').value.trim();
-      if (!smiles || !protein) {
-        toast('Please enter both a drug SMILES string and a protein sequence.');
-        return;
-      }
+    function resetResultCard() {
+      const m = META[currentDataset];
+      const scoreEl = document.getElementById("scoreValue");
+      scoreEl.textContent = "—";
+      scoreEl.classList.add("placeholder");
+      document.getElementById("scoreUnit").textContent = m ? m.unit : "pKd (-log10 M)";
+      document.getElementById("scoreStatus").textContent = "(awaiting input)";
 
-      const btn = $('#predict');
-      btn.disabled = true;
-      $('#runStatus').textContent = 'Running inference…';
+      const badge = document.getElementById("affinityBadge");
+      badge.className = "affinity-badge badge-idle";
+      badge.textContent = "No prediction yet";
 
-      try {
-        const res = await fetch('/predict', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ dataset: ds, smiles, protein })
-        });
-        const data = await res.json();
-        if (data.error) {
-          toast(data.error);
-          $('#runStatus').textContent = 'Input error';
-          return;
-        }
-        renderWarnings(data.warnings || []);
-        const statusLabel = isExample && currentMeasured !== null
-          ? `Example (Measured: ${currentMeasured} ${data.unit})`
-          : 'Live ONNX prediction';
-        updateResultUI(ds, data.value, data.label, statusLabel, isExample ? currentMeasured : null);
-      } catch (err) {
-        toast('Inference request failed. Check that the FastAPI server is running.');
-        $('#runStatus').textContent = 'Server error';
-      } finally {
-        btn.disabled = false;
-      }
+      highlightPieCategory(null);
     }
 
-    function renderAccuracyChart(ds) {
-      const svg = $('#accuracySvg');
-      if (!META || !META[ds]) return;
-      const cfg = META[ds];
-      const pts = cfg.test_points || [];
-      const minV = cfg.scale_min;
-      const maxV = cfg.scale_max;
+    function highlightPieCategory(category) {
+      const slices = {
+        weak: document.getElementById("sliceWeak"),
+        moderate: document.getElementById("sliceModerate"),
+        strong: document.getElementById("sliceStrong"),
+      };
+      const legs = {
+        weak: document.getElementById("legWeak"),
+        moderate: document.getElementById("legModerate"),
+        strong: document.getElementById("legStrong"),
+      };
 
-      const W = 920, H = 220;
-      const padL = 56, padR = 24, padT = 16, padB = 34;
+      Object.keys(slices).forEach((k) => {
+        if (!category) {
+          slices[k].style.opacity = "0.92";
+          slices[k].style.transform = "scale(1)";
+          legs[k].classList.remove("active");
+        } else if (k === category) {
+          slices[k].style.opacity = "1";
+          slices[k].style.transform = "scale(1.04)";
+          slices[k].style.transformOrigin = "60px 60px";
+          legs[k].classList.add("active");
+        } else {
+          slices[k].style.opacity = "0.38";
+          slices[k].style.transform = "scale(1)";
+          legs[k].classList.remove("active");
+        }
+      });
+    }
+
+    function updateMetricsAndChart(datasetKey) {
+      const m = META[datasetKey];
+      if (!m) return;
+
+      const metrics = m.metrics || {};
+      document.getElementById("metricCI").textContent = metrics.CI != null ? Number(metrics.CI).toFixed(3) : "—";
+      document.getElementById("metricMSE").textContent = metrics.MSE != null ? Number(metrics.MSE).toFixed(3) : "—";
+      document.getElementById("metricR2M").textContent = metrics.r2m != null ? Number(metrics.r2m).toFixed(3) : "—";
+      document.getElementById("metricAUPR").textContent = metrics.AUPR != null ? Number(metrics.AUPR).toFixed(3) : "—";
+
+      const pts = m.test_points || [];
+      const nTest = metrics.n_test ? metrics.n_test.toLocaleString() : "held-out";
+      document.getElementById("chartSubtitle").textContent =
+        `${datasetKey} test set (${pts.length} random points shown out of ${nTest})`;
+
+      renderScatterPlot(m);
+    }
+
+    function renderScatterPlot(m) {
+      const svg = document.getElementById("scatterSvg");
+      const pts = m.test_points || [];
+      const minV = m.scale_min ?? 4.5;
+      const maxV = m.scale_max ?? 10.5;
+
+      const W = 640, H = 270;
+      const padL = 54, padR = 20, padT = 18, padB = 42;
       const plotW = W - padL - padR;
       const plotH = H - padT - padB;
 
-      const toX = v => padL + ((Math.max(minV, Math.min(maxV, v)) - minV) / (maxV - minV)) * plotW;
-      const toY = v => padT + plotH - ((Math.max(minV, Math.min(maxV, v)) - minV) / (maxV - minV)) * plotH;
+      const xScale = (v) => padL + ((v - minV) / (maxV - minV)) * plotW;
+      const yScale = (v) => padT + plotH - ((v - minV) / (maxV - minV)) * plotH;
 
-      let out = '';
+      let html = "";
 
-      // Grid lines & axis ticks
-      const steps = 5;
-      for (let i = 0; i <= steps; i++) {
-        const val = minV + ((maxV - minV) * i) / steps;
-        const x = toX(val).toFixed(1);
-        const y = toY(val).toFixed(1);
-        out += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#edf2f1" stroke-width="1"/>`;
-        out += `<line x1="${x}" y1="${padT}" x2="${x}" y2="${padT + plotH}" stroke="#f3f6f6" stroke-width="1"/>`;
-        out += `<text x="${padL - 8}" y="${Number(y) + 3}" text-anchor="end" fill="#8d9a9c" font-family="DM Mono, monospace" font-size="9.5">${val.toFixed(1)}</text>`;
-        out += `<text x="${x}" y="${padT + plotH + 15}" text-anchor="middle" fill="#8d9a9c" font-family="DM Mono, monospace" font-size="9.5">${val.toFixed(1)}</text>`;
+      // Grid lines & Ticks
+      const step = (maxV - minV) <= 6.5 ? 1 : 1.5;
+      for (let v = Math.ceil(minV); v <= Math.floor(maxV); v += step) {
+        const x = xScale(v);
+        const y = yScale(v);
+        html += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e4eef8" stroke-width="1"/>`;
+        html += `<line x1="${x}" y1="${padT}" x2="${x}" y2="${padT + plotH}" stroke="#eef5fc" stroke-width="1"/>`;
+        html += `<text x="${x}" y="${padT + plotH + 16}" text-anchor="middle" font-size="11" font-weight="600" fill="#476282">${v}</text>`;
+        html += `<text x="${padL - 8}" y="${y + 4}" text-anchor="end" font-size="11" font-weight="600" fill="#476282">${v}</text>`;
       }
 
-      // Axis borders & titles
-      out += `<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + plotH}" stroke="#d5dfdf" stroke-width="1.2"/>`;
-      out += `<line x1="${padL}" y1="${padT + plotH}" x2="${W - padR}" y2="${padT + plotH}" stroke="#d5dfdf" stroke-width="1.2"/>`;
-      out += `<text x="${padL + plotW / 2}" y="${H - 4}" text-anchor="middle" fill="#6f8084" font-family="DM Mono, monospace" font-size="10">MEASURED AFFINITY (${cfg.unit})</text>`;
-      out += `<text x="14" y="${padT + plotH / 2}" text-anchor="middle" fill="#6f8084" font-family="DM Mono, monospace" font-size="10" transform="rotate(-90 14 ${padT + plotH / 2})">PREDICTED (${cfg.unit})</text>`;
+      // Axes borders
+      html += `<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + plotH}" stroke="#64748b" stroke-width="1.3"/>`;
+      html += `<line x1="${padL}" y1="${padT + plotH}" x2="${W - padR}" y2="${padT + plotH}" stroke="#64748b" stroke-width="1.3"/>`;
 
-      // Active cutoff lines
-      const cx = toX(cfg.binds_cutoff).toFixed(1);
-      const cy = toY(cfg.binds_cutoff).toFixed(1);
-      out += `<line x1="${cx}" y1="${padT}" x2="${cx}" y2="${padT + plotH}" stroke="#d7e7e4" stroke-dasharray="3 3" stroke-width="1"/>`;
-      out += `<line x1="${padL}" y1="${cy}" x2="${W - padR}" y2="${cy}" stroke="#d7e7e4" stroke-dasharray="3 3" stroke-width="1"/>`;
+      // Axis labels
+      html += `<text x="${padL + plotW / 2}" y="${H - 6}" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0d2b52">Experimental affinity (${m.unit.split(" ")[0]})</text>`;
+      html += `<text x="15" y="${padT + plotH / 2}" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0d2b52" transform="rotate(-90 15 ${padT + plotH / 2})">Predicted affinity</text>`;
 
-      // Ideal y = x diagonal
-      out += `<line x1="${toX(minV)}" y1="${toY(minV)}" x2="${toX(maxV)}" y2="${toY(maxV)}" stroke="#8ea3a6" stroke-dasharray="5 5" stroke-width="1.5"/>`;
+      // Ideal y = x dashed line
+      html += `<line x1="${xScale(minV)}" y1="${yScale(minV)}" x2="${xScale(maxV)}" y2="${yScale(maxV)}" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5 4"/>`;
 
-      // Test points
-      const stride = Math.max(1, Math.floor(pts.length / 600));
-      for (let i = 0; i < pts.length; i += stride) {
-        const [pred, actual] = pts[i];
-        const px = toX(actual).toFixed(1);
-        const py = toY(pred).toFixed(1);
-        out += `<circle cx="${px}" cy="${py}" r="2.7" fill="#46a39a" fill-opacity="0.45"/>`;
-      }
-
-      // Highlight current user prediction
-      if (typeof currentPredicted === 'number') {
-        const py = toY(currentPredicted).toFixed(1);
-        if (typeof currentMeasured === 'number' && currentMeasured !== null) {
-          const px = toX(currentMeasured).toFixed(1);
-          out += `<circle cx="${px}" cy="${py}" r="6.5" fill="#087f78" stroke="#ffffff" stroke-width="2.2"/>`;
-          out += `<text x="${Number(px) + 10}" y="${Number(py) - 6}" fill="#075f5a" font-family="DM Mono, monospace" font-size="10.5" font-weight="500">Pred ${currentPredicted.toFixed(2)} / Actual ${currentMeasured.toFixed(2)}</text>`;
-        } else {
-          const diagX = toX(currentPredicted).toFixed(1);
-          out += `<line x1="${padL}" y1="${py}" x2="${W - padR}" y2="${py}" stroke="#087f78" stroke-width="1.6" stroke-dasharray="4 3"/>`;
-          out += `<circle cx="${diagX}" cy="${py}" r="6" fill="#087f78" stroke="#ffffff" stroke-width="2"/>`;
-          out += `<text x="${Math.min(W - 145, Number(diagX) + 10)}" y="${Math.max(padT + 14, Number(py) - 8)}" fill="#075f5a" font-family="DM Mono, monospace" font-size="10.5" font-weight="500">Prediction: ${currentPredicted.toFixed(2)} ${cfg.unit}</text>`;
+      // Scatter points: stored as [pred, actual] -> X = actual, Y = pred
+      let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0, count = 0;
+      pts.forEach((pair) => {
+        const pred = pair[0];
+        const actual = pair[1];
+        if (actual >= minV && actual <= maxV && pred >= minV && pred <= maxV) {
+          const cx = xScale(actual);
+          const cy = yScale(pred);
+          html += `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="3.4" fill="#2b7de9" fill-opacity="0.62"/>`;
+          sumX += actual;
+          sumY += pred;
+          sumXY += actual * pred;
+          sumXX += actual * actual;
+          count++;
         }
+      });
+
+      // Linear trend line across test points
+      if (count > 2) {
+        const slope = (count * sumXY - sumX * sumY) / (count * sumXX - sumX * sumX);
+        const intercept = (sumY - slope * sumX) / count;
+        const y1 = Math.max(minV, Math.min(maxV, slope * minV + intercept));
+        const y2 = Math.max(minV, Math.min(maxV, slope * maxV + intercept));
+        html += `<line x1="${xScale(minV)}" y1="${yScale(y1)}" x2="${xScale(maxV)}" y2="${yScale(y2)}" stroke="#14b8a6" stroke-width="2.2"/>`;
       }
 
-      svg.innerHTML = out;
+      // Highlight user's current prediction along the diagonal reference if available
+      if (lastPrediction !== null) {
+        const clamped = Math.max(minV, Math.min(maxV, lastPrediction));
+        const px = xScale(clamped);
+        const py = yScale(clamped);
+        html += `<circle cx="${px}" cy="${py}" r="8" fill="#14b8a6" fill-opacity="0.2" stroke="#0d2b52" stroke-width="2"/>`;
+        html += `<circle cx="${px}" cy="${py}" r="3.5" fill="#14b8a6"/>`;
+      }
+
+      svg.innerHTML = html;
     }
 
-    // Event bindings
-    $('#drug').addEventListener('input', () => {
-      $('#drugSelect').value = '';
-      currentMeasured = null;
-      updateCounts();
+    // Event Listeners
+    datasetSelect.addEventListener("change", () => {
+      currentDataset = datasetSelect.value;
+      populatePresets(currentDataset);
+      updateMetricsAndChart(currentDataset);
     });
-    $('#target').addEventListener('input', () => {
-      $('#targetSelect').value = '';
-      currentMeasured = null;
-      updateCounts();
-    });
-    $('#dataset').addEventListener('change', () => {
-      renderWarnings([]);
-      applyDatasetUI($('#dataset').value, true);
-    });
-    $('#predict').addEventListener('click', () => runPrediction(false));
 
-    // Initialize
-    (async function init() {
-      try {
-        const res = await fetch('/metadata');
-        META = await res.json();
-        applyDatasetUI('Davis', true);
-      } catch (e) {
-        toast('Could not load model metadata from backend.');
+    drugPresetSelect.addEventListener("change", () => {
+      const val = drugPresetSelect.value;
+      if (val === "custom") {
+        smilesInput.value = "";
+      } else {
+        const d = META[currentDataset]._parsedDrugs[Number(val)];
+        smilesInput.value = d ? (d.smiles || d.drug || d.smi || "") : "";
       }
-    })();
+      updateCountersAndButton();
+    });
+
+    proteinPresetSelect.addEventListener("change", () => {
+      const val = proteinPresetSelect.value;
+      if (val === "custom") {
+        proteinInput.value = "";
+      } else {
+        const p = META[currentDataset]._parsedProteins[Number(val)];
+        proteinInput.value = p ? (p.sequence || p.protein || p.seq || "") : "";
+      }
+      updateCountersAndButton();
+    });
+
+    smilesInput.addEventListener("input", () => {
+      drugPresetSelect.value = "custom";
+      updateCountersAndButton();
+    });
+
+    proteinInput.addEventListener("input", () => {
+      proteinPresetSelect.value = "custom";
+      updateCountersAndButton();
+    });
+
+    predictBtn.addEventListener("click", async () => {
+      const smiles = smilesInput.value.trim();
+      const protein = proteinInput.value.trim();
+      if (!smiles || !protein) return;
+
+      predictBtn.disabled = true;
+      document.getElementById("scoreStatus").textContent = "Running ONNX inference...";
+
+      try {
+        const res = await fetch("/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            dataset: currentDataset,
+            smiles,
+            protein,
+          }),
+        });
+        const data = await res.json();
+
+        if (data.error) {
+          document.getElementById("scoreStatus").textContent = data.error;
+          predictBtn.disabled = false;
+          return;
+        }
+
+        const rawPred = data.prediction ?? data.affinity ?? data.score ?? data.value ?? data.pkd ?? data.result ?? Object.values(data).find(v => typeof v === "number"); const pred = Number(rawPred);
+        lastPrediction = pred;
+        const m = META[currentDataset];
+
+        const scoreEl = document.getElementById("scoreValue");
+        scoreEl.textContent = pred.toFixed(2);
+        scoreEl.classList.remove("placeholder");
+        document.getElementById("scoreUnit").textContent = data.unit || m.unit;
+
+        // Determine Weak / Moderate / Strong category
+        const weakCut = m.weak_below ?? (currentDataset === "Davis" ? 6.0 : 11.0);
+        const strongCut = m.binds_cutoff ?? (currentDataset === "Davis" ? 7.0 : 12.1);
+
+        let category = "moderate";
+        let labelText = "Moderate Affinity";
+        let badgeClass = "badge-moderate";
+
+        if (pred < weakCut) {
+          category = "weak";
+          labelText = "Weak / Non-Binder";
+          badgeClass = "badge-weak";
+        } else if (pred >= strongCut) {
+          category = "strong";
+          labelText = "Strong Binder";
+          badgeClass = "badge-strong";
+        }
+
+        document.getElementById("scoreStatus").textContent =
+          data.interpretation || `${labelText} (${currentDataset} model)`;
+
+        const badge = document.getElementById("affinityBadge");
+        badge.style.display = "inline-block"; badge.className = `affinity-badge ${badgeClass}`;
+        badge.textContent = labelText;
+
+        highlightPieCategory(category);
+
+        // Update Warnings Accordion
+        const warnings = data.warnings || [];
+        const warnIcon = document.getElementById("warnIcon");
+        const warnSummary = document.getElementById("warnSummary");
+        const warnContent = document.getElementById("warnContent");
+
+        if (warnings.length > 0) {
+          warnIcon.classList.add("has-warnings");
+          warnSummary.textContent = `${warnings.length} sequence notice(s) detected — click to view details.`;
+          warnContent.innerHTML = `<ul class="warning-list">${warnings.map((w) => `<li>${w}</li>`).join("")}</ul>`;
+        } else {
+          warnIcon.classList.remove("has-warnings");
+          warnSummary.textContent = "All input characters and lengths are valid for this model.";
+          warnContent.textContent = "No warnings reported for your SMILES or protein sequence.";
+        }
+
+        // Re-render scatter plot with user's prediction marker
+        renderScatterPlot(m);
+      } catch (err) {
+        document.getElementById("scoreStatus").textContent = "Prediction failed. Check server logs.";
+      } finally {
+        updateCountersAndButton();
+      }
+    });
+
+    // Initialize App from /metadata
+    async function init() {
+      try {
+        const res = await fetch("/metadata");
+        META = await res.json();
+
+        document.getElementById("statusDot").classList.remove("loading");
+        document.getElementById("statusText").textContent = "MODELS READY";
+
+        populatePresets(currentDataset);
+        updateMetricsAndChart(currentDataset);
+      } catch (err) {
+        document.getElementById("statusText").textContent = "OFFLINE";
+      }
+    }
+
+    init();
   </script>
 </body>
-
 </html>
